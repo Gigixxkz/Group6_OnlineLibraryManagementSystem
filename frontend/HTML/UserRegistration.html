@@ -19,7 +19,7 @@
 </head>
 
 <body style="background: linear-gradient(to bottom, #F98EF6, #B51F1A);" class="d-flex justify-content-center align-items-center vh-100">
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<div class="position-relative">
 
 		<!-- Main Registration Form -->
@@ -31,36 +31,36 @@
 					<h2 class="fw-bold mb-3 text-center">User Registration</h2>
 					<hr class="border-light mb-3">
 
-					<form>
+					<form id="registerForm">
 						<!-- Name and Surname -->
 						<div class="row mb-2">
 							<div class="col">
 								<label for="name" class="form-label fw-semibold">Name</label>
-								<input type="text" class="form-control bg-success-subtle rounded-pill border-0" id="name" placeholder="Name">
+								<input name="name" type="text" class="form-control bg-success-subtle rounded-pill border-0" id="name" placeholder="Name" required minlength="2">
 							</div>
 							<div class="col">
 								<label for="surname" class="form-label fw-semibold">Surname</label>
-								<input type="text" class="form-control bg-success-subtle rounded-pill border-0" id="surname" placeholder="Surname">
+								<input name="surname" type="text" class="form-control bg-success-subtle rounded-pill border-0" id="surname" placeholder="Surname" required minlength="2">
 							</div>
 						</div>
 
 						<!-- Username -->
 						<div class="mb-2">
 							<label for="username" class="form-label fw-semibold">Username</label>
-							<input type="text" class="form-control bg-success-subtle rounded-pill border-0" id="username" placeholder="Username">
+							<input name="username" type="text" class="form-control bg-success-subtle rounded-pill border-0" id="username" placeholder="Username" required minlength="2">
 						</div>
 
 						<!-- Email -->
 						<div class="mb-2">
 							<label for="email" class="form-label fw-semibold">Email Address</label>
-							<input type="email" class="form-control bg-success-subtle rounded-pill border-0" id="email" placeholder="Email Address">
+							<input name="email" type="email" class="form-control bg-success-subtle rounded-pill border-0" id="email" placeholder="Email Address" required minlength="3">
 						</div>
 
 						<!-- Password -->
 						<div class="mb-2">
 							<label for="password" class="form-label fw-semibold">Password</label>
 							<div class="input-group">
-								<input type="password" class="form-control bg-success-subtle rounded-start-pill border-0" id="password" placeholder="Password">
+								<input name="password" type="password" class="form-control bg-success-subtle rounded-start-pill border-0" id="password" placeholder="Password" required minlength="4">
 								<span class="input-group-text bg-success-subtle border-0 rounded-end-pill">
 									<img src="images/closedEye.png" alt="Show Password Icon" width="20">
 								</span>
@@ -70,7 +70,7 @@
 						<!-- Phone Number -->
 						<div class="mb-3">
 							<label for="phone" class="form-label fw-semibold">Phone Number</label>
-							<input type="tel" class="form-control bg-success-subtle rounded-pill border-0" id="phone" placeholder="Phone Number">
+							<input input name="phone_number" type="tel" class="form-control bg-success-subtle rounded-pill border-0" id="phone" placeholder="Phone Number" required minlength="8">
 						</div>
 
 						<!-- Register Button -->
@@ -103,10 +103,11 @@
         <!-- I added rotation to make the decorative image look more aestheticc -->
         <img src="images/decor.png" alt="Decorative flowers"
         style="position: absolute; bottom: -60px; right: -120px; width: 300px; transform: rotate(30deg);">
+		<div id="responseMsg"></div>
 
 	</div>
 
-	<!-- Bootstrap JS -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script src="../Scripts/registration.js"></script>
 </body>
 </html>
