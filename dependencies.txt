@@ -1,0 +1,9 @@
+#Dependencies
+
+Python
+FastAPI
+uvicorn
+bcrypt version 3.2.2
+
+to activate the virtual environment: venv\Scripts\activate
+to run the backend server: Backend.main:app --reload
