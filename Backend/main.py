@@ -10,7 +10,7 @@ app = FastAPI()
 #this allows the frontend to communicate with the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # Allow all origins during development
+    allow_origins=["*", "null", "file://"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
