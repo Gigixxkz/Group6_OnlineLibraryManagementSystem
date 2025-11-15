@@ -1,19 +1,18 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Form
 from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
 import os
 import sqlite3
 from passlib.hash import bcrypt
-
 
 app = FastAPI()
 
 #this allows the frontend to communicate with the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
+    allow_origins=["*", "null", "file://"], 
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 

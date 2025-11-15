@@ -54,6 +54,7 @@
 						<div class="mb-2">
 							<label for="email" class="form-label fw-semibold">Email Address</label>
 							<input name="email" type="email" class="form-control bg-success-subtle rounded-pill border-0" id="email" placeholder="Email Address" required minlength="3">
+
 						</div>
 
 						<!-- Password -->
@@ -73,11 +74,6 @@
 							<input input name="phone_number" type="tel" class="form-control bg-success-subtle rounded-pill border-0" id="phone" placeholder="Phone Number" required minlength="8">
 						</div>
 
-						<!-- Register Button -->
-						<div class="d-grid mb-2">
-							<button type="submit" class="btn btn-light rounded-pill fw-semibold">Register</button>
-						</div>
-
 						<!-- Redirect to Login -->
 						<p class="text-center mb-0">
 							Already have an account?
@@ -89,6 +85,10 @@
 							   Login now
 							</a>
 						</p>
+						<!-- Register Button -->
+						<div class="d-grid mb-2">
+							<button type="submit" class="btn btn-light rounded-pill fw-semibold">Register</button>
+						</div>
 					</form>
 				</div>
 
@@ -103,11 +103,12 @@
         <!-- I added rotation to make the decorative image look more aestheticc -->
         <img src="../images/decor.png" alt="Decorative flowers"
         style="position: absolute; bottom: -60px; right: -120px; width: 300px; transform: rotate(30deg);">
-		<div id="responseMsg"></div>
+		<div id="responseMsg" class="mt-3 text-center"></div> <!-- Making the popup more noticable using bootstrap -->
 
 	</div>
 
 
-	<script src="../Scripts/registration.js"></script>
+	
 </body>
+<script src="../scripts/registration.js"></script>
 </html>
