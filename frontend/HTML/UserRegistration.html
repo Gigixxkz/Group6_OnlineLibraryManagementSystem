@@ -54,7 +54,6 @@
 						<div class="mb-2">
 							<label for="email" class="form-label fw-semibold">Email Address</label>
 							<input name="email" type="email" class="form-control bg-success-subtle rounded-pill border-0" id="email" placeholder="Email Address" required minlength="3">
-
 						</div>
 
 						<!-- Password -->
@@ -62,8 +61,10 @@
 							<label for="password" class="form-label fw-semibold">Password</label>
 							<div class="input-group">
 								<input name="password" type="password" class="form-control bg-success-subtle rounded-start-pill border-0" id="password" placeholder="Password" required minlength="4">
+
+								<!-- UPDATED PATH -->
 								<span class="input-group-text bg-success-subtle border-0 rounded-end-pill">
-									<img src="../images/closedEye.png" alt="Show Password Icon" width="20">
+									<img src="/static/images/closedEye.png" alt="Show Password Icon" width="20">
 								</span>
 							</div>
 						</div>
@@ -77,7 +78,9 @@
 						<!-- Redirect to Login -->
 						<p class="text-center mb-0">
 							Already have an account?
-							<a href="UserLogin.html"
+
+							<!-- UPDATED PATH -->
+							<a href="/static/HTML/UserLogin.html"
 							   class="text-warning text-decoration-none"
 							   style="transition: color 0.3s;"
 							   onmouseover="this.style.setProperty('color', '#FA0060', 'important')"
@@ -85,6 +88,7 @@
 							   Login now
 							</a>
 						</p>
+
 						<!-- Register Button -->
 						<div class="d-grid mb-2">
 							<button type="submit" class="btn btn-light rounded-pill fw-semibold">Register</button>
@@ -94,21 +98,24 @@
 
 				<!-- Right side: Image -->
 				<div class="col-md-5 text-center pe-4">
-					<img src="../images/registration.png" alt="Registration Illustration" class="img-fluid" style="max-height: 240px;">
+
+					<!-- UPDATED PATH -->
+					<img src="/static/images/registration.png" alt="Registration Illustration" class="img-fluid" style="max-height: 240px;">
 				</div>
 			</div>
 		</div>
 
         <!-- Decorative image  -->
-        <!-- I added rotation to make the decorative image look more aestheticc -->
-        <img src="../images/decor.png" alt="Decorative flowers"
+        <!-- I added rotation to make the decorative image look more aesthetic -->
+        
+        <!-- UPDATED PATH -->
+        <img src="/static/images/decor.png" alt="Decorative flowers"
         style="position: absolute; bottom: -60px; right: -120px; width: 300px; transform: rotate(30deg);">
-		<div id="responseMsg" class="mt-3 text-center"></div> <!-- Making the popup more noticable using bootstrap -->
 
+		<div id="responseMsg" class="mt-3 text-center"></div> <!-- Making the popup more noticeable using bootstrap -->
 	</div>
 
-
-	
 </body>
-<script src="../scripts/registration.js"></script>
+
+<script src="/static/scripts/registration.js"></script>
 </html>

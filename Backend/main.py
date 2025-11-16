@@ -1,69 +1,69 @@
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Form
-from fastapi.responses import JSONResponse
 import os
 import sqlite3
-from passlib.hash import bcrypt
 
 app = FastAPI()
 
-#this allows the frontend to communicate with the backend
+# This allows the frontend to communicate with the backend. We will use this only for current development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*", "null", "file://"], 
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Database connection ---
+# This connects the backend with the database
 def get_db_connection():
-    #this finds the database path relative to this file
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    #this actually builds the path to the database
     db_path = os.path.join(BASE_DIR, "../Database/library.db")
-    #this connects to the database
     conn = sqlite3.connect(db_path)
-    #this makes the
     conn.row_factory = sqlite3.Row
     return conn
 
 
-# --- Registration endpoint ---
-@app.post("/register")
-#Reads form data from the frontend request
-def register_user(
-    name: str = Form(...),
-    surname: str = Form(...),
-    username: str = Form(...),
-    email: str = Form(...),
-    phone_number: str = Form(...),
-    password: str = Form(...)
-):
-    #Connects to the database
-    conn = get_db_connection()
-    cursor = conn.cursor()
+# this routers are used to separate different functionalities/APIs of the backend.
+# Every new functionality/API we make shoulb be in its own router file inside the routers folder and should be imported here
+from .routers import registration
 
-    # Check if username or email already exists
-    cursor.execute(
-        "SELECT * FROM users WHERE username = ? OR email = ?",
-        (username, email)
-    )
-    #this checks if a user with the same username or email already exists end returns an error if so
-    if cursor.fetchone():
-        conn.close()
-        return JSONResponse(content={"success": False, "message": "Username or email already exists."})
+app.include_router(registration.router)
 
-    #this hashes the password before storing it in the database
-    hashed_password = bcrypt.hash(password)
+# This makes all paths work regardless of where the project is run from
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# This makes the frontend files be served by FastAPI as static files
+STATIC_DIR = os.path.join(BASE_DIR, "../frontend")
+HTML_DIR = os.path.join(STATIC_DIR, "HTML")
 
-    #this inserts the new user into the database
-    cursor.execute("""
-        INSERT INTO users (name, surname, username, email, phone_number, password)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (name, surname, username, email, phone_number, hashed_password))
-    #this saves the changes and closes the database connection
-    conn.commit()
-    conn.close()
-    #this returns a success message to the frontend
-    return JSONResponse(content={"success": True, "message": "User registered successfully!"})
+from fastapi.staticfiles import StaticFiles
+
+# This is a custom StaticFiles class that disables caching, which i found usefull during development
+class NoCacheStaticFiles(StaticFiles):
+    async def get_response(self, path, scope):
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+
+# This makes anything inside the frontend folder (HTML, CSS, JS, images)
+# becomes accessible through URLs like: /static/HTML/SomePage.html
+# We use NoCacheStaticFiles instead of StaticFiles to disable browser caching during development. Without this, browsers may show old versions of files
+app.mount("/static", NoCacheStaticFiles(directory=STATIC_DIR), name="static")
+
+# This makes our login page the root page, in other words, it serves UserLogin.html when someone accesses the base URL
+@app.get("/")
+def serve_login():
+    file_path = os.path.join(HTML_DIR, "UserLogin.html")
+    response = FileResponse(file_path)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+# This serves the favicon.ico file when requested by browsers
+@app.get("/favicon.ico")
+def favicon():
+    return FileResponse(os.path.join(STATIC_DIR, "favicon.ico"))
