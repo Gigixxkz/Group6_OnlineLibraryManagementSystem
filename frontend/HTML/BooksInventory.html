@@ -1,0 +1,283 @@
+<!--
+  File: Bookinventory.html
+  Created by: Andreas Andreou
+  Course: Software Engineering II
+  Project: Online Library Management System (Group 6)
+  Description: Book inventory page 
+  Date Created: 7 November 2025
+  Last Updated: 19 November 2025
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Inventory Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body { background-color: #5a0033; color: #fff; font-family: "Poppins", sans-serif; }
+    .navbar { background-color: #222; padding: 0.8rem 2rem; }
+    .navbar-brand { font-weight: 600; color: #fff; }
+    .navbar-nav .nav-link { color: #ccc; margin-right: 1.2rem; }
+    .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active { color: #fff; }
+    .inventory-card { background-color: #111; border-radius: 12px; box-shadow: 0 0 25px rgba(0, 0, 0, 0.4); padding: 30px; margin-top: 40px; }
+    .inventory-card h3 { text-align: center; color: #fff; margin-bottom: 25px; }
+    .search-container { display: flex; justify-content: center; margin-bottom: 25px; }
+    .search-box { width: 60%; background-color: #333; border: none; color: #fff; border-radius: 25px 0 0 25px; padding: 0.6rem 1rem; }
+    .search-btn { background-color: #5f7367; border: none; color: #fff; border-radius: 0 25px 25px 0; padding: 0.6rem 1.5rem; transition: background-color 0.3s; }
+    .search-btn:hover { background-color: #6b8f74; }
+    .btn-add { background-color: #28a745; border: none; border-radius: 25px; color: #fff; padding: 0.6rem 1.5rem; font-weight: 500; transition: 0.3s; }
+    .btn-add:hover { background-color: #34d058; }
+    table { color: #fff; }
+    th { color: #ff80bf; }
+    .table-dark { background-color: #1c1c1c; }
+    .btn-remove { background-color: #c0392b; border: none; padding: 5px 15px; border-radius: 8px; color: #fff; transition: 0.3s; }
+    .btn-remove:hover { background-color: #e74c3c; }
+    .btn-restore { background-color: #28a745; border: none; padding: 5px 15px; border-radius: 8px; color: #fff; transition: 0.3s; }
+    .btn-restore:hover { background-color: #2ecc71; }
+    .removed { opacity: 0.5; text-decoration: line-through; }
+    .modal-content { background-color: #111; color: #fff; border-radius: 10px; border: 1px solid #333; }
+    .modal-header h5 { color: #ff80bf; font-weight: 600; }
+    select, input, textarea { background-color: #222 !important; color: #fff !important; border: 1px solid #555 !important; }
+    select:focus, input:focus, textarea:focus { border-color: #ff80bf !important; box-shadow: 0 0 4px #ff80bf !important; }
+    .modal-footer .btn-confirm { background-color: #28a745; border: none; color: #fff; padding: 8px 16px; border-radius: 6px; transition: 0.3s; }
+    .modal-footer .btn-confirm:hover { background-color: #2ecc71; }
+    .modal-footer .btn-cancel { background-color: #e74c3c; border: none; color: #fff; padding: 8px 16px; border-radius: 6px; }
+    small { color: #aaa; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#">Library Name</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link active" href="BorrowedBooksMonitoring.html">Borrowed books</a></li>
+        <li class="nav-item"><a class="nav-link active" href="BooksInventory.html">Inventory</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Inventory -->
+  <div class="container inventory-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>Admin Inventory Management</h3>
+      <button class="btn-add" data-bs-toggle="modal" data-bs-target="#addBookModal">+ Add New Book</button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-box" placeholder="Search by ISBN, Title, Author..." />
+      <button class="search-btn" onclick="renderBooks()">Search</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-dark table-striped align-middle">
+        <thead>
+          <tr>
+            <th>ISBN</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Condition</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="bookTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add Book Modal -->
+  <div class="modal fade" id="addBookModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Add New Book to Inventory</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addBookForm">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label>Title *</label>
+                <input type="text" class="form-control" id="bookTitle" name="title" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Author *</label>
+                <input type="text" class="form-control" id="bookAuthor" name="author" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Publisher *</label>
+                <input type="text" class="form-control" id="bookPublisher" name="publisher" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Year of Release *</label>
+                <input type="number" class="form-control" id="bookYear" name="year" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>ISBN *</label>
+                <input type="text" class="form-control" id="bookISBN" name="isbn" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Language *</label>
+                <input type="text" class="form-control" id="bookLanguage" name="language" required />
+              </div>
+              <div class="col-12 mb-3">
+                <label>Description *</label>
+                <textarea class="form-control" id="bookDescription" name="description" rows="3" required></textarea>
+              </div>
+              <div class="col-12 mb-3">
+                <label>Cover Image *</label>
+                <input type="file" class="form-control" id="bookImage" name="cover_image" accept="image/*" required />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-confirm" onclick="addBook()">Add Book</button>
+          <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remove Book Modal -->
+  <div class="modal fade" id="removeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Confirm Book Removal</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>This will <b>soft delete</b> the book – it will be hidden from users but not permanently deleted.</p>
+          <select id="removeReason" class="form-select mb-3">
+            <option value="Lost">Lost</option>
+            <option value="Damaged">Damaged</option>
+            <option value="Outdated">Outdated</option>
+            <option value="Unavailable">Unavailable</option>
+          </select>
+          <textarea id="removeNotes" class="form-control" rows="3" placeholder="Optional notes..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-confirm" id="confirmRemoveBtn">Confirm</button>
+          <button class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_BASE = "http://127.0.0.1:8000"; // backend URL
+    let books = [];
+    let bookToRemove = null;
+
+    // Load all books
+    async function loadBooks() {
+      try {
+        const res = await fetch(`${API_BASE}/books/all`);
+        const data = await res.json();
+        books = data.books;
+        renderBooks();
+      } catch (err) {
+        console.error("Failed to load books:", err);
+      }
+    }
+
+    // Render book table
+    function renderBooks() {
+      const tbody = document.getElementById("bookTableBody");
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      tbody.innerHTML = "";
+
+      books.filter(b => 
+        b.isbn.toLowerCase().includes(search) ||
+        b.title.toLowerCase().includes(search) ||
+        b.author.toLowerCase().includes(search)
+      ).forEach(book => {
+        const row = document.createElement("tr");
+        if (!book.available) row.classList.add("removed");
+
+        row.innerHTML = `
+          <td>${book.isbn}</td>
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.available ? "Good" : "Removed"}</td>
+          <td>${book.available ? "Available" : "Removed"}</td>
+          <td>
+            ${book.available 
+              ? `<button class="btn btn-remove btn-sm" onclick="openRemoveModal(${book.id})">Remove</button>`
+              : `<button class="btn btn-restore btn-sm" onclick="restoreBook(${book.id})">Restore</button>`}
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Open remove modal
+    function openRemoveModal(bookId) {
+      bookToRemove = bookId;
+      new bootstrap.Modal(document.getElementById("removeModal")).show();
+    }
+
+    // Confirm removal
+    document.getElementById("confirmRemoveBtn").addEventListener("click", async () => {
+      if (!bookToRemove) return;
+      try {
+        const res = await fetch(`${API_BASE}/books/remove/${bookToRemove}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reason: document.getElementById("removeReason").value })
+        });
+        const data = await res.json();
+        if (!res.ok) { alert(data.detail || "Failed to remove book"); return; }
+
+        books = books.map(book => book.id === bookToRemove ? { ...book, available: 0 } : book);
+        renderBooks();
+        bootstrap.Modal.getInstance(document.getElementById("removeModal")).hide();
+      } catch (err) {
+        alert("Failed to remove book: " + err);
+      }
+    });
+
+    // Restore book
+    async function restoreBook(bookId) {
+      try {
+        const res = await fetch(`${API_BASE}/books/restore/${bookId}`, { method: "POST" });
+        const data = await res.json();
+        if (!res.ok) { alert(data.detail || "Failed to restore book"); return; }
+
+        books = books.map(book => book.id === bookId ? { ...book, available: 1 } : book);
+        renderBooks();
+      } catch (err) {
+        alert("Failed to restore book: " + err);
+      }
+    }
+
+    // Add book
+    async function addBook() {
+      const form = document.getElementById("addBookForm");
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch(`${API_BASE}/books/add`, { method: "POST", body: formData });
+        const data = await res.json();
+        if (!res.ok) { alert(data.detail || "Failed to add book"); return; }
+
+        await loadBooks();
+        form.reset();
+        bootstrap.Modal.getInstance(document.getElementById("addBookModal")).hide();
+      } catch (err) {
+        alert("Error adding book: " + err);
+      }
+    }
+
+    loadBooks();
+  </script>
+</body>
+</html>

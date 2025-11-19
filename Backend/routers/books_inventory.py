@@ -1,0 +1,124 @@
+
+ #File:books_inventory.py
+  #Created by: Andreas Andreou
+  #Course: Software Engineering II
+  #Project: Online Library Management System (Group 6)
+  #Description: Homepage for the Archive of Light Library.
+  #Date Created: 9 November 2025
+  #Last Updated: 19 November 2025
+
+from fastapi import FastAPI, UploadFile, Form, HTTPException, File
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+import sqlite3, os, uuid, shutil
+
+app = FastAPI()
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+DB_PATH = os.path.join("Database", "library.db")
+IMAGE_DIR = "Images"
+os.makedirs(IMAGE_DIR, exist_ok=True)
+
+# DB helper
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# GET all books
+@app.get("/books/all")
+def get_all_books():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, title, author, publisher, year,
+               description, isbn, language,
+               cover_image, available
+        FROM books
+    """)
+    books = [dict(row) for row in cur.fetchall()]
+    conn.close()
+    return {"books": books}
+
+# Serve book image
+@app.get("/image/{filename}")
+def serve_image(filename: str):
+    filepath = os.path.join(IMAGE_DIR, filename)
+    if not os.path.exists(filepath):
+        raise HTTPException(status_code=404, detail="Image not found")
+    return FileResponse(filepath)
+
+# Add new book
+@app.post("/books/add")
+def add_book(
+    title: str = Form(...),
+    author: str = Form(...),
+    publisher: str = Form(...),
+    year: int = Form(...),
+    description: str = Form(...),
+    isbn: str = Form(...),
+    language: str = Form(...),
+    cover_image: UploadFile = File(...)  
+):
+    # Save image
+    image_ext = cover_image.filename.split(".")[-1]
+    image_name = f"{uuid.uuid4()}.{image_ext}"
+    image_path = os.path.join(IMAGE_DIR, image_name)
+
+    with open(image_path, "wb") as buffer:
+        shutil.copyfileobj(cover_image.file, buffer)
+
+    # Insert into DB
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO books
+        (title, author, publisher, year, description,
+         isbn, language, cover_image,available)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)
+    """, (title, author, publisher, year, description,
+          isbn, language, image_name,1))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Book added successfully"}
+
+# Remove / mark book unavailable
+@app.post("/books/remove/{book_id}")  
+def remove_book(book_id: int):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM books WHERE id = ?", (book_id,))
+    if cur.fetchone() is None:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Book not found")
+    cur.execute("UPDATE books SET available = 0 WHERE id = ?", (book_id,))
+    conn.commit()
+    conn.close()
+    return {"message": "Book removed"}
+
+#undo remove 
+@app.post("/books/restore/{book_id}")
+def restore_book(book_id: int):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id FROM books WHERE id = ?", (book_id,))
+    if cur.fetchone() is None:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    cur.execute("UPDATE books SET available = 1 WHERE id = ?", (book_id,))
+    conn.commit()
+    conn.close()
+
+    return {"message": "Book restored successfully"}
+
