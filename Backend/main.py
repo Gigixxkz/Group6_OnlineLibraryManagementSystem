@@ -18,8 +18,12 @@ app.add_middleware(
 
 # This connects the backend with the database
 def get_db_connection():
+
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(BASE_DIR, "../Database/library.db")
+
+    print("DB PATH (main): ", db_path)
+    
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
@@ -30,6 +34,12 @@ def get_db_connection():
 from .routers import registration
 
 app.include_router(registration.router)
+
+#----------------------------------------------------------------------------
+#Georgia: Activating the login API so the user can call it
+from .routers import login
+app.include_router(login.router)
+#----------------------------------------------------------------------------
 
 # This makes all paths work regardless of where the project is run from
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
