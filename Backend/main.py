@@ -32,13 +32,18 @@ def get_db_connection():
 # this routers are used to separate different functionalities/APIs of the backend.
 # Every new functionality/API we make shoulb be in its own router file inside the routers folder and should be imported here
 from .routers import registration
-
 app.include_router(registration.router)
 
 #----------------------------------------------------------------------------
 #Georgia: Activating the login API so the user can call it
 from .routers import login
 app.include_router(login.router)
+#----------------------------------------------------------------------------
+
+#----------------------------------------------------------------------------
+#Georgia: Activating the books inventory API
+from .routers import books_inventory
+app.include_router(books_inventory.router)
 #----------------------------------------------------------------------------
 
 # This makes all paths work regardless of where the project is run from

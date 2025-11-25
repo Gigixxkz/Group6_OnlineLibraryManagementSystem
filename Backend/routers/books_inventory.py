@@ -7,21 +7,50 @@
   #Date Created: 9 November 2025
   #Last Updated: 19 November 2025
 
-from fastapi import FastAPI, UploadFile, Form, HTTPException, File
-from fastapi.middleware.cors import CORSMiddleware
+#from fastapi import FastAPI, UploadFile, Form, HTTPException, File
+#from fastapi.middleware.cors import CORSMiddleware
+#from fastapi.responses import FileResponse
+#import sqlite3, os, uuid, shutil
+#app = FastAPI()
+
+#--------------------------------------------------------------
+#Georgia
+#This file originally used FastAPI(), but our project must only
+#have one main FastAPI app (in main.py). 
+#To include Andreas' books API correctly, we need to convert this file 
+#into a router.
+from fastapi import APIRouter, UploadFile, Form, HTTPException, File
+router = APIRouter(prefix="/books", tags=["Books"])
+#--------------------------------------------------------------
+
+#--------------------------------------------------------------
+#Georgia:
+#These imports were originally part of the FastAPI app block.
+#Since that block is commented out now, we need to import them again
+#because they are used for DB access, image saving, and file paths.
+#--------------------------------------------------------------
+import os
+import sqlite3
+import uuid
+import shutil
 from fastapi.responses import FileResponse
-import sqlite3, os, uuid, shutil
 
-app = FastAPI()
+#--------------------------------------------------------------
+#Georgia:
+#This CORS middleware was originally used when this file was a
+#full FastAPI app. After converting it into a router, it can no
+#longer use app.add_middleware(), because only main.py is allowed
+#to add middleware. main.py already handles CORS for the whole
+#project, so we disable this block to avoid errors.
+#--------------------------------------------------------------
+#app.add_middleware(
+#    CORSMiddleware,
+#    allow_origins=["*"],
+#    allow_credentials=True,
+#    allow_methods=["*"],
+#    allow_headers=["*"],
+#)
 
-# CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 DB_PATH = os.path.join("Database", "library.db")
 IMAGE_DIR = "Images"
@@ -34,7 +63,10 @@ def get_db():
     return conn
 
 # GET all books
-@app.get("/books/all")
+
+#Georgia change: using router instead of app
+@router.get("/all") 
+
 def get_all_books():
     conn = get_db()
     cur = conn.cursor()
@@ -49,7 +81,10 @@ def get_all_books():
     return {"books": books}
 
 # Serve book image
-@app.get("/image/{filename}")
+
+#Georgia change: using router instead of app
+@router.get("/image/{filename}")
+
 def serve_image(filename: str):
     filepath = os.path.join(IMAGE_DIR, filename)
     if not os.path.exists(filepath):
@@ -57,7 +92,10 @@ def serve_image(filename: str):
     return FileResponse(filepath)
 
 # Add new book
-@app.post("/books/add")
+
+#Georgia change:
+@router.post("/add")
+
 def add_book(
     title: str = Form(...),
     author: str = Form(...),
@@ -92,7 +130,10 @@ def add_book(
     return {"message": "Book added successfully"}
 
 # Remove / mark book unavailable
-@app.post("/books/remove/{book_id}")  
+
+#Georgia change:
+@router.post("/remove/{book_id}") 
+
 def remove_book(book_id: int):
     conn = get_db()
     cur = conn.cursor()
@@ -106,7 +147,10 @@ def remove_book(book_id: int):
     return {"message": "Book removed"}
 
 #undo remove 
-@app.post("/books/restore/{book_id}")
+
+#Georgia change:
+@router.post("/restore/{book_id}")
+
 def restore_book(book_id: int):
     conn = get_db()
     cur = conn.cursor()
