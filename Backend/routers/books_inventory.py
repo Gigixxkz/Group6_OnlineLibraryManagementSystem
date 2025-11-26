@@ -19,7 +19,7 @@
 #have one main FastAPI app (in main.py). 
 #To include Andreas' books API correctly, we need to convert this file 
 #into a router.
-from fastapi import APIRouter, UploadFile, Form, HTTPException, File
+from fastapi import APIRouter, UploadFile, Form, HTTPException, File, Depends
 router = APIRouter(prefix="/books", tags=["Books"])
 #--------------------------------------------------------------
 
@@ -34,6 +34,7 @@ import sqlite3
 import uuid
 import shutil
 from fastapi.responses import FileResponse
+from .login import get_current_user
 
 #--------------------------------------------------------------
 #Georgia:
@@ -104,8 +105,10 @@ def add_book(
     description: str = Form(...),
     isbn: str = Form(...),
     language: str = Form(...),
-    cover_image: UploadFile = File(...)  
-):
+    cover_image: UploadFile = File(...), 
+    current_user=Depends(get_current_user)):
+    if current_user["role"] not in ("admin", "librarian"):
+        raise HTTPException(status_code=403, detail="Forbidden")
     # Save image
     image_ext = cover_image.filename.split(".")[-1]
     image_name = f"{uuid.uuid4()}.{image_ext}"
@@ -134,7 +137,9 @@ def add_book(
 #Georgia change:
 @router.post("/remove/{book_id}") 
 
-def remove_book(book_id: int):
+def remove_book(book_id: int, current_user=Depends(get_current_user)):
+    if current_user["role"] not in ("admin", "librarian"):
+        raise HTTPException(status_code=403, detail="Forbidden")
     conn = get_db()
     cur = conn.cursor()
     cur.execute("SELECT id FROM books WHERE id = ?", (book_id,))

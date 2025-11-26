@@ -1,0 +1,8 @@
+To create an admin/librarian:
+python tools/manage_roles.py --username admin --email admin@example.com --role admin --password StrongPass123!
+
+Promote existing user (no password change):
+python tools/manage_roles.py --username alice --email alice@example.com --role librarian
+
+Promote and reset password:
+python tools/manage_roles.py --username alice --email alice@example.com --role admin --password NewPass456! --update-password

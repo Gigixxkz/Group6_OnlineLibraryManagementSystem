@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 import os
 import sqlite3
 
@@ -10,10 +11,22 @@ app = FastAPI()
 # This allows the frontend to communicate with the backend. We will use this only for current development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://127.0.0.1:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# With this middleware, we can use sessions to keep track of logged-in users so the system knows who is making each request
+SESSION_SECRET = os.getenv("SESSION_SECRET", "replace-me-with-a-strong-secret")
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SESSION_SECRET,
+    session_cookie="olms_session",
+    max_age=7200,  # 2 hours
+    same_site="lax",
+    https_only=False, 
 )
 
 # This connects the backend with the database

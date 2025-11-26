@@ -19,54 +19,8 @@ Date Updated: 24 November 2025
 </head>
 
 <body>
-    <!-- Navbar will have the same vibe as HomePage: 
-    Uses /static paths because FastAPI serves the frontend from /static -->
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand"  href="/static/HTML/HomePage.html">Archive of Light Library</a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarUser" aria-controls="navbarUser" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarUser">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-
-                    <!-- Home button -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/static/HTML/HomePage.html">Home</a>
-                    </li>
-
-                    <!-- The search books page that we are at now -->
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/static/HTML/SearchBooks.html">Search Books</a>
-                    </li>
-
-                    <!-- Borrowing history -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/static/HTML/YourBorrowedBooks.html">Borrowing History</a>
-                    </li>
-
-                    <!-- Notifications bell -->
-                    <li class="nav-item d-flex align-items-center">
-					<button id="bellBtn" class="btn btn-link nav-link p-0">
-						<img src="https://img.icons8.com/ios-glyphs/30/FFFFFF/alarm.png" 
-						alt="bell" width="20" height="20" style="vertical-align: middle; margin-top: -2px;">
-					</button>
-				    </li>
-
-                    <!-- Logout button -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <!-- Shared Navbar -->
+    <div id="navbar-container"></div>
 
      <!-- The main content wrapper -->
     <main class="container py-4">
@@ -214,6 +168,9 @@ Date Updated: 24 November 2025
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Shared Navbar JS -->
+    <script src="/static/Scripts/navbar.js"></script>
 
     <!-- Our JS file that does all the filtering magic -->
     <script src="/static/scripts/searchbooks.js"></script>

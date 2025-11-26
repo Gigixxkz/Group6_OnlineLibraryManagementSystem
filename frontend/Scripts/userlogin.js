@@ -24,9 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const password = document.getElementById("password").value;
 
         //Sending the login stuff to the backend
-        const response = await fetch("http://127.0.0.1:8000/login", {
+        const response = await fetch("/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({
                 username_or_email: usernameOrEmail,
                 password: password
