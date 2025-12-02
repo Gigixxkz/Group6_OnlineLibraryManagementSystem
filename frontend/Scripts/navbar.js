@@ -2,21 +2,21 @@
 function renderNavbar() {
   // Shared navbar markup used across pages
   return `
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#5a0033;">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/static/HTML/HomePage.html">Archive of Light Library</a>
+        <a class="navbar-brand fw-bold fs-3" href="/static/HTML/HomePage.html">Archive of Light Library</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser" aria-controls="navbarUser" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarUser">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="/static/HTML/HomePage.html" data-nav="home">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="/static/HTML/SearchBooks.html" data-nav="search">Search Books</a></li>
-            <li class="nav-item"><a class="nav-link" href="/static/HTML/YourBorrowedBooks.html" data-nav="history">Borrowing History</a></li>
+            <li class="nav-item"><a class="nav-link fs-5" href="/static/HTML/HomePage.html" data-nav="home">Home</a></li>
+            <li class="nav-item"><a class="nav-link fs-5" href="/static/HTML/SearchBooks.html" data-nav="search">Search Books</a></li>
+            <li class="nav-item"><a class="nav-link fs-5" href="/static/HTML/YourBorrowedBooks.html" data-nav="history">Borrowing History</a></li>
             <li class="nav-item d-none" id="navBooksInventory">
-              <a class="nav-link" href="/static/HTML/BooksInventory.html" data-nav="inventory">Books Inventory</a>
+              <a class="nav-link fs-5" href="/static/HTML/BooksInventory.html" data-nav="inventory">Books Inventory</a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="#" id="logoutLink">Logout</a></li>
+            <li class="nav-item"><a class="nav-link fs-5" href="#" id="logoutLink">Logout</a></li>
           </ul>
         </div>
       </div>

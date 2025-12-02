@@ -74,18 +74,17 @@ function renderBooks(books) {
         const statusClass = isAvailable ? "bg-success" : "bg-secondary";
         const statusText = isAvailable ? "Available" : "Not Available";
 
-        //Building image URL — if a book has no image, we use a fallback
+        // Georgia fix: router uses /books prefix, so image endpoint is /books/image/<filename>
         const coverImage = book.cover_image
-            ? `${API_BASE}/image/${book.cover_image}`
-            : "/static/images/library1.jpg";
+        ? `${API_BASE}/books/image/${book.cover_image}`
+        : "/static/images/library1.jpg";
 
         col.innerHTML = `
-            <div class="card h-100 shadow-sm">
-                <img src="${coverImage}" 
-                     alt="${escapeHtml(book.title || "Book Cover")}"
-                     class="card-img-top"
-                     style="height:250px; object-fit:contain; padding:10px;">
-                
+                <div class="card h-100 shadow-sm">
+                    <img src="${coverImage}"
+                    alt="${escapeHtml(book.title || "Book Cover")}"
+                    class="book-cover">
+
                 <div class="card-body text-center">
 
                     <h6 class="card-title fw-bold mb-1">
