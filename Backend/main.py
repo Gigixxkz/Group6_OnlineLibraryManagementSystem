@@ -59,6 +59,10 @@ from .routers import books_inventory
 app.include_router(books_inventory.router)
 #----------------------------------------------------------------------------
 
+# Borrow books API
+from .routers import borrow_book
+app.include_router(borrow_book.router)
+
 # This makes all paths work regardless of where the project is run from
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # This makes the frontend files be served by FastAPI as static files

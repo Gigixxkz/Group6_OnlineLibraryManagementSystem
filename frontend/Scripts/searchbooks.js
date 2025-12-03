@@ -19,6 +19,34 @@ let selectedBook = null;
 //Helper function because document.getElementById("something") is too long to type.
 const $ = (id) => document.getElementById(id);
 
+//
+async function getCurrentUser() {
+    try {
+        const response = await fetch(`${API_BASE}/session/me`, {
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            console.warn("Session check failed:", response.status);
+            alert("You must be logged in to borrow books.");
+            return null;
+        }
+
+        const data = await response.json();
+
+        if (!data.user_id) {
+            alert("You must be logged in to borrow books.");
+            return null;
+        }
+
+        return data.user_id;
+
+    } catch (error) {
+        console.error("Session fetch failed:", error);
+        alert("Error checking login status.");
+        return null;
+    }
+}
 
 //-----------------------------------------------------------------------------
 //Loading books from the backend
@@ -201,13 +229,48 @@ function initEvents() {
         modal.show();
     });
 
-    //CONFIRM BORROW (for now it just logs until UC4 is implemented)
-    $("confirmBorrowBtn").addEventListener("click", () => {
-        if (!selectedBook) return;
-        console.log("User wants to borrow:", selectedBook);
+    //MAKE BORROW 
+    $("confirmBorrowBtn").addEventListener("click", async () => {
+    if (!selectedBook) return;
 
-        //Later we will implement UC4 API call here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    });
+    // 1. Get the current logged-in user
+    const userId = await getCurrentUser();
+    if (!userId) return;
+
+    // 2. Prepare API call
+    try {
+        const response = await fetch(`${API_BASE}/borrow`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+                user_id: userId,
+                book_id: selectedBook.id
+            })
+        });
+
+        const result = await response.json();
+
+        // 3. Handle backend response
+        if (response.ok && result.success) {
+            alert("Successfully borrowed the book!");
+
+            // Refresh books to update availability
+            await loadBooks();
+
+            // Close modal
+            const modalEl = document.getElementById("confirmBorrowModal");
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+
+        } else {
+            alert(result.detail || result.message || "Borrowing failed.");
+        }
+    } catch (error) {
+        console.error("Borrow request failed:", error);
+        alert("An error occurred while borrowing the book.");
+    }
+});
 }
 
 
