@@ -16,29 +16,42 @@ Date Updated: 24 November 2025
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Georgia: Fix for tiny images in book cards -->
+    <style>
+    /*It makes book images display properly.
+    Without this, uploaded images appear tiny in the corner.*/
+    .book-cover {
+        width: 100%;            /*Making the image fill card width */
+        height: 250px;          /*Fixing the height for consistent layout */
+        object-fit: contain;    /*Keeping the image ratio without cutting */
+        padding: 10px;          /*Adding some spacing */
+    }
+    </style>
+
+
 </head>
 
-<body>
+<body class="bg-dark text-white">
     <!-- Shared Navbar -->
     <div id="navbar-container"></div>
 
-     <!-- The main content wrapper -->
+    <!-- The main content wrapper -->
     <main class="container py-4">
 
-        <!-- Title + message -->
-        <div class="text-center mb-4">
-            <h1 class="h3 fw-bold">Search Books</h1>
-            <p class="text-muted mb-0">
-                Use the filters below to find your next favorite book!
-            </p>
-        </div>
+    <!-- Title + message -->
+    <div class="text-center my-5 p-5 bg-black text-white rounded shadow"
+     style="border: 3px solid #ce75a5;">
+
+        <h1 class="fw-bold">Search Books</h1>
+        <p class="lead">Use the filters below to find your next favorite book!</p>
+    </div>
+
 
         <!-- 
           The filter bar (Implemented horizontally)
         -->
-        <section class="card shadow-sm mb-4">
-            <div class="card-body">
-
+        <section class="mb-5 p-4 bg-black text-white rounded shadow">
                 <!-- 
                   This form does not submit traditionally.
                   The JS file listens for clicks on Search and Clear.
@@ -88,13 +101,16 @@ Date Updated: 24 November 2025
 
                     <!-- Buttons Search and Clear -->
                     <div class="col-12 col-md-6 col-lg-3 ms-auto text-md-end">
-                        <button type="button" id="btnSearch" class="btn btn-primary me-2 mb-2">
-                            Search
-                        </button>
+                    <button type="button" id="btnSearch"
+                        class="btn mb-2 me-2"
+                        style="background-color:#a00055; color:white; border:none;">
+                        Search
+                    </button>
 
-                        <button type="button" id="btnClear" class="btn btn-outline-secondary mb-2">
-                            Clear
-                        </button>
+                    <button type="button" id="btnClear" class="btn btn-outline-light mb-2">
+                        Clear
+                    </button>
+
                     </div>
 
                 </form>
@@ -109,7 +125,8 @@ Date Updated: 24 November 2025
           If we see this empty while testing then our JS is not loading.
         -->
         <section>
-            <h2 class="h4 fw-bold mb-3 text-center">Available Books</h2>
+            <section class="p-4 bg-black text-white rounded shadow">
+            <h2 class="text-center mb-4 fw-bold">Available Books</h2>
 
             <div id="booksGrid" 
                  class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">

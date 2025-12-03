@@ -18,14 +18,27 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body style="background: linear-gradient(to bottom, #F98EF6, #B51F1A);" class="d-flex justify-content-center align-items-center vh-100">
+<body style="background: linear-gradient(to bottom,#be6f98, #4c1431);"
+    class="d-flex flex-column justify-content-center align-items-center vh-100">
+
+    <!-- Asmall welcome back message -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold" style="font-size: 3rem; color: #000000;">
+            Welcome Back
+        </h1>
+        <p class="lead" style="color:#2b2b2b; font-size:1.2rem; font-weight:600;">
+            Sign in to continue your journey in the Archive of Light.
+        </p>
+
+    </div>
+
 
     <!-- Main Login Form -->
     <div class="card shadow text-white" style="max-width: 700px; width: 100%; background-color: #000;">
         <div class="row g-0 align-items-center">
 
             <!-- Left side: Login form -->
-            <div class="col-md-7 p-5">
+            <div class="col-md-6 p-5">
                 <h2 class="fw-bold mb-3 text-center">User Login</h2>
                 <hr class="border-light">
 
@@ -35,21 +48,21 @@
                         <input type="text" class="form-control bg-success-subtle rounded-pill border-0" id="usernameOrEmail" placeholder="Email/Username">
                     </div>
 
+                    <!--I removed the closed eye icon, I will implement it if we have time later on-->
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control bg-success-subtle rounded-start-pill border-0" id="password" placeholder="Password">
-
-                            <!-- UPDATED PATH -->
-                            <span class="input-group-text bg-success-subtle border-0 rounded-end-pill">
-                                <img src="/static/images/closedEye.png" alt="Show Password Icon" width="20">
-                            </span>
-
-                        </div>
+                        <input type="password"
+                        class="form-control bg-success-subtle rounded-pill border-0"
+                        id="password" placeholder="Password">
                     </div>
 
+
                     <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-light rounded-pill fw-semibold">Login</button>
+                        <button type="submit" class="btn btn-light rounded-pill fw-semibold" 
+                        style="background-color:#a00055; color:white; border:none;"
+                        onmouseover="this.style.backgroundColor='#7e0041'"
+                        onmouseout="this.style.backgroundColor='#a00055'">
+                        Login</button>
                     </div>
 
                     <p class="text-center mb-0">
@@ -59,18 +72,17 @@
                         <a href="/static/HTML/UserRegistration.html"
                             class="text-warning text-decoration-none"
                             style="transition: color 0.3s;"
-                            onmouseover="this.style.setProperty('color', '#FA0060', 'important')"
-                            onmouseout="this.style.setProperty('color', '#ffc107', 'important')">
+                            onmouseover="this.style.setProperty('color', '#a00055', 'important')"
+                            onmouseout="this.style.setProperty('color', '#be6f98', 'important')">
                             Register now
                         </a>
                     </p>
                 </form>
             </div>
 
-            <div class="col-md-5 text-center ps-2 pe-0">
-
+            <div class="col-md-6 text-center p-5">
                 <!-- UPDATED PATH -->
-                <img src="/static/images/login.png" alt="User Reading Icon" class="img-fluid ms-n4" width="450">
+                <img src="/static/images/reading.png"  alt="User Reading Icon" class="img-fluid" width="450">
             </div>
 
         </div>
@@ -82,6 +94,12 @@
     <!-- JS for User Login -->
     <script src="/static/scripts/userlogin.js"></script>
 
+    <!-- Footer -->
+    <footer class="bg-dark text-light text-center py-3 mt-5 w-100">
+        <p class="mb-0">© 2025 Online Library Management System | Group 6 - Software Engineering II</p>
+    </footer>
+
 </body>
+
 </html>
 

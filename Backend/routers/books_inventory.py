@@ -54,7 +54,12 @@ from .login import get_current_user
 
 
 DB_PATH = os.path.join("Database", "library.db")
-IMAGE_DIR = "Images"
+#-----------------------------------------------------
+#Georgia:Forcing FastAPI to store and serve images from: frontend/images/
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+IMAGE_DIR = os.path.join(PROJECT_ROOT, "frontend", "images")
+print(">>> IMAGE_DIR =", IMAGE_DIR)
+#-----------------------------------------------------
 os.makedirs(IMAGE_DIR, exist_ok=True)
 
 # DB helper
