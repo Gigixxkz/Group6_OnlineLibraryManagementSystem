@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 import sqlite3, os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 router = APIRouter()
 
@@ -43,11 +43,13 @@ def borrow_book(data: dict):
 
     # --- Insert into borrowed_books ---
     borrow_date = datetime.now().isoformat()
+    return_date = datetime.now()+timedelta(days=20)
+    return_date = return_date.isoformat()
 
     cursor.execute("""
-        INSERT INTO borrowed_books (user_id, book_id, borrow_date, status)
-        VALUES (?, ?, ?, 'borrowed')
-    """, (user_id, book_id, borrow_date))
+        INSERT INTO borrowed_books (user_id, book_id, borrow_date, return_date, status)
+        VALUES (?, ?, ?, ?, 'borrowed')
+    """, (user_id, book_id, borrow_date, return_date))
 
     # --- Mark book as unavailable ---
     cursor.execute("UPDATE books SET available = 0 WHERE id = ?", (book_id,))

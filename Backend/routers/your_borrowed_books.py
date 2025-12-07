@@ -27,7 +27,7 @@ def get_borrowed_books(current_user = Depends(get_current_user)):
 
     # Fetch borrowed books
     cursor.execute("""
-        SELECT bb.id AS borrow_id, b.id AS book_id, b.title, b.author, bb.borrow_date, bb.status
+        SELECT bb.id AS borrow_id, b.id AS book_id, b.title, b.author, b.cover_image, bb.borrow_date, bb.status
         FROM borrowed_books bb
         JOIN books b ON bb.book_id = b.id
         WHERE bb.user_id = ?

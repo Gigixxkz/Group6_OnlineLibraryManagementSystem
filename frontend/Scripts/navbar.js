@@ -12,9 +12,12 @@ function renderNavbar() {
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             <li class="nav-item"><a class="nav-link fs-5" href="/static/HTML/HomePage.html" data-nav="home">Home</a></li>
             <li class="nav-item"><a class="nav-link fs-5" href="/static/HTML/SearchBooks.html" data-nav="search">Search Books</a></li>
-            <li class="nav-item"><a class="nav-link fs-5" href="/static/HTML/YourBorrowedBooks.html" data-nav="history">Borrowing History</a></li>
+            <li class="nav-item" id="yourborrowed"><a class="nav-link fs-5" href="/static/HTML/YourBorrowedBooks.html" data-nav="history">Borrowing History</a></li>
             <li class="nav-item d-none" id="navBooksInventory">
               <a class="nav-link fs-5" href="/static/HTML/BooksInventory.html" data-nav="inventory">Books Inventory</a>
+            </li>
+            <li class="nav-item d-none" id="borroewedbooksmonitoring">
+              <a class="nav-link fs-5" href="/static/HTML/BorrowedBooksMonitoring.html" data-nav="monitoring">Borrowed Books Monitoring</a>
             </li>
             <li class="nav-item"><a class="nav-link fs-5" href="#" id="logoutLink">Logout</a></li>
           </ul>
@@ -32,6 +35,7 @@ function markActiveNavLink() {
     { key: "search", match: "searchbooks.html" },
     { key: "history", match: "yourborrowedbooks.html" },
     { key: "inventory", match: "booksinventory.html" },
+    { key: "monitoring", match: "borrowedbooksmonitoring.html" },
   ];
   for (const { key, match } of map) {
     if (path.includes(match)) {
@@ -51,7 +55,11 @@ async function loadSessionAndWireNav() {
       const role = (data.role || "").toLowerCase();
       if (role === "admin" || role === "librarian") {
         const item = document.getElementById("navBooksInventory");
+        const item2 = document.getElementById("yourborrowed");
+        const item3 = document.getElementById("borroewedbooksmonitoring");
         if (item) item.classList.remove("d-none");
+        item2.classList.add("d-none");
+        if (item3) item3.classList.remove("d-none");
       }
     }
   } catch (err) {
