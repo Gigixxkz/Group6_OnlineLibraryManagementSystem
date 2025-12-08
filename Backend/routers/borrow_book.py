@@ -43,13 +43,13 @@ def borrow_book(data: dict):
 
     # --- Insert into borrowed_books ---
     borrow_date = datetime.now().isoformat()
-    return_date = datetime.now()+timedelta(days=20)
-    return_date = return_date.isoformat()
+    due_date = datetime.now()+timedelta(days=20)
+    due_date = due_date.isoformat()
 
     cursor.execute("""
-        INSERT INTO borrowed_books (user_id, book_id, borrow_date, return_date, status)
+        INSERT INTO borrowed_books (user_id, book_id, borrow_date, due_date, status)
         VALUES (?, ?, ?, ?, 'borrowed')
-    """, (user_id, book_id, borrow_date, return_date))
+    """, (user_id, book_id, borrow_date, due_date))
 
     # --- Mark book as unavailable ---
     cursor.execute("UPDATE books SET available = 0 WHERE id = ?", (book_id,))

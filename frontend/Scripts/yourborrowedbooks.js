@@ -78,7 +78,7 @@ function renderBooks(list) {
     const imgTag = item.cover_image
       ? `<img src="/books/image/${item.cover_image}" class="me-3" 
              alt="${escapeHtml(item.title)}"
-             style="width:64px;height:90px;object-fit:cover;border-radius:4px;">`
+             style="width:125px;height:200px;object-fit:cover;border-radius:4px;">`
       : `<div class="me-3" style="width:64px;height:90px;background:#333;border-radius:4px;"></div>`;
 
     const badge = statusBadgeClass(item.status);
@@ -87,18 +87,18 @@ function renderBooks(list) {
       <div class="d-flex">
         ${imgTag}
         <div class="flex-grow-1">
-          <h6 class="mb-1">${escapeHtml(item.title)}</h6>
+          <h3 class="mb-1">${escapeHtml(item.title)}</h3>
           <div class="text-muted small mb-1">${escapeHtml(item.author || "")}</div>
 
           <div class="small mb-1">
             Borrowed: <strong>${formatDate(item.borrow_date)}</strong><br>
              Due: <strong>${formatDate(item.due_date)}</strong><br>
-             Return: <strong>${formatDate(item.return_date)}</strong>
+              Returned: <strong>${formatDate(item.return_date)}</strong>
           </div>
 
           <div class="mb-2">
             <span class="badge ${badge}">${item.status}</span>
-            <span class="badge bg-secondary">Fine: €${(item.fine_amount || 0).toFixed(2)}</span>
+            <span class="badge bg-secondary">Fine: €${(item.fine_amount || 0).toFixed(2)} - ${item.fine_status || "N/A"}</span>
           </div>
 
           <div>${actionButtonsHtml(item)}</div>
@@ -114,8 +114,7 @@ function renderBooks(list) {
 // Badge color mapping
 function statusBadgeClass(status) {
   switch ((status || "").toLowerCase()) {
-    case "active": return "bg-primary";
-    case "due soon": return "bg-warning text-dark";
+    case "borrowed": return "bg-primary";
     case "overdue": return "bg-danger";
     case "returned": return "bg-success";
     default: return "bg-secondary";
@@ -131,7 +130,7 @@ function actionButtonsHtml(item) {
 
   let html = "";
 
-  if (item.status === "Active" || item.status === "Due Soon") {
+  if (item.status === "borrowed" || item.status === "overdue") {
     html += `<button class="btn btn-sm btn-light me-2" onclick="renewBook(${item.borrowed_id})">Renew</button>`;
   }
 

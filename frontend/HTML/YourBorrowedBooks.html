@@ -22,8 +22,7 @@
           <input id="searchInput" class="form-control me-2" style="max-width:320px" placeholder="Search title or author...">
           <select id="statusFilter" class="form-select" style="max-width:160px">
             <option value="all">All statuses</option>
-            <option value="Active">Active</option>
-            <option value="Due Soon">Due Soon</option>
+            <option value="Borrowed">Borrowed</option>
             <option value="Overdue">Overdue</option>
             <option value="Returned">Returned</option>
           </select>
@@ -39,15 +38,14 @@
 
         <!-- Legend -->
         <div class="mb-3">
-          <span class="badge bg-primary">Active</span>
-          <span class="badge bg-warning text-dark">Due Soon</span>
+          <span class="badge bg-primary">Borrowed</span>
           <span class="badge bg-danger">Overdue</span>
           <span class="badge bg-success">Returned</span>
         </div>
 
         <!-- Cards container -->
         <div id="borrowedBooksContainer" class="row gy-3">
-          <!-- Cards inserted dynamically by history.js -->
+          <!-- Cards inserted dynamically by yourborrowedbooks.js -->
         </div>
 
       </div>

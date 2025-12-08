@@ -8,7 +8,7 @@
 #  Last Updated: 19 November 2025
 #----------------------------------------------------------------------------
 from fastapi import APIRouter, HTTPException, Request, Depends
-import sqlite3, os
+import sqlite3, os, datetime
 from passlib.hash import bcrypt
 
 #Creating a router for our login API
@@ -27,6 +27,77 @@ def get_db_connection():
     #Making rows act like dictionaries so that it is easier to use
     conn.row_factory = sqlite3.Row
     return conn
+
+def update_fines():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    current_date = datetime.date.today()
+
+    # Get all borrowed books that have NOT been returned
+    cursor.execute("""
+        SELECT id, user_id, due_date, status
+        FROM borrowed_books
+        WHERE return_date IS NULL
+    """)
+    borrowed_books = cursor.fetchall()
+
+    for record in borrowed_books:
+        due_date = record["due_date"]
+        borrowed_id = record["id"]
+        user_id = record["user_id"]
+        current_status = record["status"]
+
+        due_date = datetime.datetime.fromisoformat(due_date).date()
+
+        # Only apply fine if overdue
+        if current_date > due_date:
+            days_overdue = (current_date - due_date).days
+            new_fine = days_overdue * 5
+
+           # update status to 'overdue' if not already
+            if current_status != "overdue":
+                cursor.execute("""
+                    UPDATE borrowed_books
+                    SET status = 'overdue'
+                    WHERE id = ?
+                """, (borrowed_id,))
+                print(f"[STATUS] Book record {borrowed_id} marked as OVERDUE.")
+
+            # check if a fine for this already exists
+            cursor.execute("""
+                SELECT id FROM fines
+                WHERE borrowed_book_id = ?
+            """, (borrowed_id,))
+            
+            fine_record = cursor.fetchone()
+
+            if fine_record:
+                # update existing fine
+                cursor.execute("""
+                    UPDATE fines
+                    SET amount = ?
+                    WHERE borrowed_book_id = ?
+                """, (new_fine, borrowed_id))
+
+            else:
+                # create a new fine
+                cursor.execute("""
+                    INSERT INTO fines (user_id, borrowed_book_id, amount, status)
+                    VALUES (?, ?, ?, 'unpaid')
+                """, (user_id, borrowed_id, new_fine))
+
+        else:
+            # If it's not overdue but status is 'overdue', correct it
+            if current_status == "overdue":
+                cursor.execute("""
+                    UPDATE borrowed_books
+                    SET status = 'borrowed'
+                    WHERE id = ?
+                """, (borrowed_id,))
+
+    conn.commit()
+    conn.close()
 
 #The login endpoint:
 @router.post("/login")
@@ -66,6 +137,7 @@ def login_user(request: Request, data: dict):
     request.session["user_id"] = user["id"]
     request.session["username"] = user["username"]
     request.session["role"] = user["role"] or "user"
+    update_fines()
     return {"message": "success", "user": {"id": user["id"], "username": user["username"], "role": user["role"]}}
 #----------------------------------------------------------------------------
 

@@ -27,9 +27,10 @@ def get_borrowed_books(current_user = Depends(get_current_user)):
 
     # Fetch borrowed books
     cursor.execute("""
-        SELECT bb.id AS borrow_id, b.id AS book_id, b.title, b.author, b.cover_image, bb.borrow_date, bb.status
+        SELECT bb.id AS borrow_id, b.id AS book_id, b.title, b.author, b.cover_image, bb.borrow_date, bb.status, bb.due_date, bb.return_date, f.amount AS fine_amount, f.status AS fine_status
         FROM borrowed_books bb
         JOIN books b ON bb.book_id = b.id
+        LEFT JOIN fines f ON f.borrowed_book_id = bb.id
         WHERE bb.user_id = ?
     """, (userid,))
 
@@ -40,3 +41,4 @@ def get_borrowed_books(current_user = Depends(get_current_user)):
     books_list = [dict(book) for book in borrowed_books]
 
     return {"borrowed_books": books_list}
+
