@@ -1,0 +1,202 @@
+<!--
+  File: BorrowedBooksMonitoring.html
+  Created by: Constantinos Karpasitis
+  Course: Software Engineering II
+  Project: Online Library Management System (OLMS)
+  Description: Admin page for monitoring borrowed books.
+  Date Created: 26 November 2025
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Borrowed Books Monitoring</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body { background-color: #5a0033; color: #fff; font-family: "Poppins", sans-serif; }
+    .navbar { background-color: #222; padding: 0.8rem 2rem; }
+    .navbar-brand { font-weight: 600; color: #fff; }
+    .navbar-nav .nav-link { color: #ccc; margin-right: 1.2rem; }
+    .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active { color: #fff; }
+
+    .monitor-card {
+      background-color: #111;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+      padding: 30px;
+      margin-top: 40px;
+    }
+
+    h3 { text-align: center; color: #fff; margin-bottom: 25px; }
+
+    .search-container { display: flex; justify-content: center; margin-bottom: 25px; }
+    .search-box {
+      width: 60%;
+      background-color: #333;
+      border: none;
+      color: #fff;
+      border-radius: 25px 0 0 25px;
+      padding: 0.6rem 1rem;
+    }
+    .search-btn {
+      background-color: #5f7367;
+      border: none;
+      color: #fff;
+      border-radius: 0 25px 25px 0;
+      padding: 0.6rem 1.5rem;
+      transition: background-color 0.3s;
+    }
+    .search-btn:hover { background-color: #6b8f74; }
+
+    table { color: #fff; }
+    th { color: #ff80bf; }
+    .table-dark { background-color: #1c1c1c; }
+
+    .btn-return, .btn-reminder {
+      padding: 5px 15px;
+      border-radius: 8px;
+      color: #fff;
+      border: none;
+      transition: 0.3s;
+    }
+    .btn-return { background-color: #28a745; }
+    .btn-return:hover { background-color: #2ecc71; }
+
+    .btn-reminder { background-color: #c0392b; }
+    .btn-reminder:hover { background-color: #e74c3c; }
+
+    .overdue { color: #ff4d4d; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- Shared Navbar -->
+  <div id="navbar-container"></div>
+
+  <!-- Monitoring Section -->
+  <div class="container monitor-card">
+    <h3>Borrowed Books Monitoring</h3>
+
+    <!-- Search -->
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-box" placeholder="Search by User, Book Title, ISBN..." />
+      <button class="search-btn" onclick="renderBorrowedBooks()">Search</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-dark table-striped align-middle">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Book Title</th>
+            <th>ISBN</th>
+            <th>Borrow Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="borrowedBooksTableBody">
+          <!-- JS Populates Here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Return Confirmation Modal -->
+  <div class="modal fade" id="returnModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Confirm Return</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Mark this book as returned?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-return" id="confirmReturnBtn">Confirm</button>
+          <button class="btn btn-reminder" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Borrowed Books JS -->
+  <script>
+    // Sample borrowed books data
+    let borrowedBooks = [
+      { id:1, user:"John Smith", title:"The Hobbit", isbn:"9780261102217", borrowDate:"2025-11-20", dueDate:"2025-11-30" },
+      { id:2, user:"Maria Ioannou", title:"Pride and Prejudice", isbn:"9780141040349", borrowDate:"2025-11-10", dueDate:"2025-11-15" },
+      { id:3, user:"Andreas Georgiou", title:"1984", isbn:"9780451524935", borrowDate:"2025-11-01", dueDate:"2025-11-25" }
+    ];
+
+    let selectedBookId = null;
+
+    // Render borrowed books table
+    function renderBorrowedBooks() {
+      const tableBody = document.getElementById("borrowedBooksTableBody");
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      tableBody.innerHTML = "";
+
+      borrowedBooks
+        .filter(book => 
+          book.user.toLowerCase().includes(search) || 
+          book.title.toLowerCase().includes(search) || 
+          book.isbn.includes(search)
+        )
+        .forEach(book => {
+          const isOverdue = new Date(book.dueDate) < new Date();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${book.user}</td>
+            <td>${book.title}</td>
+            <td>${book.isbn}</td>
+            <td>${book.borrowDate}</td>
+            <td class="${isOverdue?'overdue':''}">${book.dueDate}</td>
+            <td>${isOverdue?'<span class="overdue">Overdue</span>':'Borrowed'}</td>
+            <td>
+              <button class="btn-return" onclick="openReturnModal(${book.id})">Return</button>
+              <button class="btn-reminder" onclick="sendReminder('${book.user}','${book.title}')">Reminder</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+    }
+
+    // Open return confirmation modal
+    function openReturnModal(bookId) {
+      selectedBookId = bookId;
+      const modal = new bootstrap.Modal(document.getElementById("returnModal"));
+      modal.show();
+    }
+
+    // Confirm return action
+    document.getElementById("confirmReturnBtn").addEventListener("click", () => {
+      borrowedBooks = borrowedBooks.filter(book => book.id !== selectedBookId);
+      selectedBookId = null;
+      renderBorrowedBooks();
+      const modal = bootstrap.Modal.getInstance(document.getElementById("returnModal"));
+      modal.hide();
+    });
+
+    // Reminder placeholder
+    function sendReminder(user, title) {
+      alert(`Reminder sent to ${user} for the book "${title}".`);
+    }
+
+    // Initial render on page load
+    document.addEventListener("DOMContentLoaded", renderBorrowedBooks);
+  </script>
+
+</body>
+</html>
