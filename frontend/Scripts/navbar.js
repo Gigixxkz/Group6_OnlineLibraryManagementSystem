@@ -152,7 +152,17 @@ function setupFinesBellClick() {
   });
 }
 
-  // Logout handler
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("navbar-container");
+  if (!container) return;
+  //render navbar
+  container.innerHTML = renderNavbar();
+  //render modal
+  const modalContainer = document.getElementById("global-modals");
+  if (modalContainer) {
+    modalContainer.innerHTML = renderGlobalModals();
+  }
+// Logout handler
   const logoutLink = document.getElementById("logoutLink");
   if (logoutLink) {
     logoutLink.addEventListener("click", async (event) => {
@@ -166,19 +176,6 @@ function setupFinesBellClick() {
       }
     });
   }
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("navbar-container");
-  if (!container) return;
-  //render navbar
-  container.innerHTML = renderNavbar();
-  //render modal
-  const modalContainer = document.getElementById("global-modals");
-  if (modalContainer) {
-    modalContainer.innerHTML = renderGlobalModals();
-  }
-
   markActiveNavLink();
   loadSessionAndWireNav();
 
