@@ -59,6 +59,12 @@ from .routers import books_inventory
 app.include_router(books_inventory.router)
 #----------------------------------------------------------------------------
 
+#----------------------------------------------------------------------------
+#Georgia: Get fines API
+from .routers import getfines
+app.include_router(getfines.router)
+#----------------------------------------------------------------------------
+
 # Borrow books API
 from .routers import borrow_book
 app.include_router(borrow_book.router)

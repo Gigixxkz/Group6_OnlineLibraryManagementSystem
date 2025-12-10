@@ -19,11 +19,47 @@ function renderNavbar() {
             <li class="nav-item d-none" id="borroewedbooksmonitoring">
               <a class="nav-link fs-5" href="/static/HTML/BorrowedBooksMonitoring.html" data-nav="monitoring">Borrowed Books Monitoring</a>
             </li>
+            <li class="nav-item position-relative">
+              <a class="nav-link fs-4" href="#" id="finesBell">
+                🔔
+                <span id="finesBadge" 
+                      class="position-absolute top-0 start-100 translate-middle p-1 bg-danger text-white rounded-circle d-none"
+                      style="font-size: 0.7rem; font-weight: bold;">
+                  !
+                </span>
+              </a>
+            </li>
             <li class="nav-item"><a class="nav-link fs-5" href="#" id="logoutLink">Logout</a></li>
           </ul>
         </div>
       </div>
     </nav>
+  `;
+}
+
+function renderGlobalModals() {
+  return `
+    <!-- FINES MODAL -->
+    <div class="modal fade" id="finesModal" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-header" style="background-color:#5a0033; color:white;">
+            <h5 class="modal-title">Unpaid Fines</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body text-dark" id="finesModalBody">
+            <p class="text-center text-muted">Loading fines...</p>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
   `;
 }
 
@@ -65,6 +101,56 @@ async function loadSessionAndWireNav() {
   } catch (err) {
     console.error("Session check failed", err);
   }
+}
+
+async function checkUserFines() {
+  try {
+    const res = await fetch("/getfines", { credentials: "include" });
+    if (!res.ok) return;
+
+    const fines = await res.json(); // ← expects: [{id, amount, status, book_title, due_date}, ...]
+
+    const badge = document.getElementById("finesBadge");
+    if (fines.length > 0) {
+      badge.classList.remove("d-none");
+    } else {
+      badge.classList.add("d-none");
+    }
+
+    // Save fines for modal use
+    window._userFines = fines;
+
+  } catch (err) {
+    console.error("Error checking fines:", err);
+  }
+}
+//
+function setupFinesBellClick() {
+  const bell = document.getElementById("finesBell");
+  const modalBody = document.getElementById("finesModalBody");
+  const finesModal = new bootstrap.Modal(document.getElementById("finesModal"));
+
+  bell.addEventListener("click", () => {
+    const fines = window._userFines || [];
+
+    if (fines.length === 0) {
+      modalBody.innerHTML = `
+        <p class="text-center text-success fs-4">You have no unpaid fines</p>
+      `;
+    } else {
+      modalBody.innerHTML = fines.map(f => `
+        <div class="border rounded p-3 mb-2">
+          <div><strong>Book:</strong> ${f.book_title}</div>
+          <div><strong>Amount:</strong> €${f.amount.toFixed(2)}</div>
+          <div><strong>Due:</strong> ${f.due_date}</div>
+          <div><strong>Status:</strong> ${f.status}</div>
+        </div>
+      `).join("");
+    }
+
+    finesModal.show();
+  });
+}
 
   // Logout handler
   const logoutLink = document.getElementById("logoutLink");
@@ -80,12 +166,22 @@ async function loadSessionAndWireNav() {
       }
     });
   }
-}
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("navbar-container");
   if (!container) return;
+  //render navbar
   container.innerHTML = renderNavbar();
+  //render modal
+  const modalContainer = document.getElementById("global-modals");
+  if (modalContainer) {
+    modalContainer.innerHTML = renderGlobalModals();
+  }
+
   markActiveNavLink();
   loadSessionAndWireNav();
+
+  checkUserFines();
+  setupFinesBellClick();
 });
