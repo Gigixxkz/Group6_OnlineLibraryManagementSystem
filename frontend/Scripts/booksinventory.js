@@ -89,6 +89,9 @@
       const form = document.getElementById("addBookForm");
       const formData = new FormData(form);
 
+      const genres = getSelectedGenres();
+      formData.append("genres", JSON.stringify(genres));
+
       try {
         const res = await fetch(`${API_BASE}/books/add`, { method: "POST", body: formData });
         const data = await res.json();
@@ -96,10 +99,17 @@
 
         await loadBooks();
         form.reset();
+
+        document.querySelectorAll(".genre-check:checked").forEach(cb => cb.checked = false);
+
         bootstrap.Modal.getInstance(document.getElementById("addBookModal")).hide();
       } catch (err) {
         alert("Error adding book: " + err);
       }
     }
+    
+    function getSelectedGenres() {
+      return Array.from(document.querySelectorAll(".genre-check:checked")).map(cb => cb.value);
+      }
 
     loadBooks();

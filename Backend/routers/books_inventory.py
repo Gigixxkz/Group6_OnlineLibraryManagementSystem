@@ -19,6 +19,7 @@
 #have one main FastAPI app (in main.py). 
 #To include Andreas' books API correctly, we need to convert this file 
 #into a router.
+import json
 from fastapi import APIRouter, UploadFile, Form, HTTPException, File, Depends
 router = APIRouter(prefix="/books", tags=["Books"])
 #--------------------------------------------------------------
@@ -110,6 +111,7 @@ def add_book(
     description: str = Form(...),
     isbn: str = Form(...),
     language: str = Form(...),
+    genres: str = Form(...),
     cover_image: UploadFile = File(...), 
     current_user=Depends(get_current_user)):
     if current_user["role"] not in ("admin", "librarian"):
@@ -122,6 +124,11 @@ def add_book(
     with open(image_path, "wb") as buffer:
         shutil.copyfileobj(cover_image.file, buffer)
 
+    try:
+        genres = json.loads(genres)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid genre format")
+
     # Insert into DB
     conn = get_db()
     cur = conn.cursor()
@@ -132,6 +139,22 @@ def add_book(
         VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)
     """, (title, author, publisher, year, description,
           isbn, language, image_name,1))
+
+    book_id = cur.lastrowid  
+
+    for g in genres:
+        # get genre_id by genre name
+        cur.execute("SELECT id FROM genres WHERE name = ?", (g,))
+        genre_row = cur.fetchone()
+
+        if genre_row:
+            genre_id = genre_row["id"]
+            cur.execute(
+                "INSERT INTO book_genres (book_id, genre_id) VALUES (?, ?)",
+                (book_id, genre_id)
+            )
+        else:
+            pass
     conn.commit()
     conn.close()
 
