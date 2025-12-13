@@ -73,6 +73,9 @@ app.include_router(borrow_book.router)
 from .routers import your_borrowed_books
 app.include_router(your_borrowed_books.router)
 
+from .routers import borrowedbooksmonitoring
+app.include_router(borrowedbooksmonitoring.router)
+
 # This makes all paths work regardless of where the project is run from
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # This makes the frontend files be served by FastAPI as static files
