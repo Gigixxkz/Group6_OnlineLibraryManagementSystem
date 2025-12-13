@@ -19,16 +19,22 @@ function renderNavbar() {
             <li class="nav-item d-none" id="borroewedbooksmonitoring">
               <a class="nav-link fs-5" href="/static/HTML/BorrowedBooksMonitoring.html" data-nav="monitoring">Borrowed Books Monitoring</a>
             </li>
-            <li class="nav-item position-relative">
-              <a class="nav-link fs-4" href="#" id="finesBell">
-                🔔
-                <span id="finesBadge" 
-                      class="position-absolute top-0 start-100 translate-middle p-1 bg-danger text-white rounded-circle d-none"
-                      style="font-size: 0.7rem; font-weight: bold;">
-                  !
-                </span>
-              </a>
+            <li class="nav-item d-flex align-items-center position-relative">
+              <button id="finesBell" class="btn btn-link nav-link p-0">
+                <img src="https://img.icons8.com/ios-glyphs/30/FFFFFF/alarm.png"
+                  alt="bell"
+                  width="20"
+                  height="20"
+                style="vertical-align: middle; margin-top: -2px;">
+              </button>
+
+              <span id="finesBadge"
+                class="position-absolute top-0 start-100 translate-middle p-1 bg-danger text-white rounded-circle d-none"
+                style="font-size: 0.7rem; font-weight: bold;">
+                !
+              </span>
             </li>
+
             <li class="nav-item"><a class="nav-link fs-5" href="#" id="logoutLink">Logout</a></li>
           </ul>
         </div>
