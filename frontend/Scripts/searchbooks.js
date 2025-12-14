@@ -123,6 +123,16 @@ function renderBooks(books) {
                     <p class="mb-1"><strong>Year:</strong> ${book.year || "—"}</p>
                     <p class="mb-1"><strong>Language:</strong> ${escapeHtml(book.language || "—")}</p>
 
+                    <p class="mb-2"><strong>Genres:</strong> 
+                        ${
+                            book.genres && book.genres.length > 0
+                                ? book.genres
+                                    .map(g => `<span class="badge bg-info text-dark me-1">${escapeHtml(g)}</span>`)
+                                    .join("")
+                                : "<span class='text-muted'>None</span>"
+                        }
+                    </p>
+
                     <p class="mb-2">
                         <strong>Status:</strong>
                         <span class="badge ${statusClass}">${statusText}</span>

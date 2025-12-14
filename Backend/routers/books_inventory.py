@@ -78,12 +78,25 @@ def get_all_books():
     conn = get_db()
     cur = conn.cursor()
     cur.execute("""
-        SELECT id, title, author, publisher, year,
-               description, isbn, language,
-               cover_image, available
-        FROM books
+        SELECT b.id, b.title, b.author, b.publisher, b.year,
+               b.description, b.isbn, b.language,
+               b.cover_image, b.available,
+               GROUP_CONCAT(g.name) AS genres
+        FROM books b
+        LEFT JOIN book_genres bg ON b.id = bg.book_id
+        LEFT JOIN genres g ON bg.genre_id = g.id
+        GROUP BY b.id
+        ORDER BY b.title;
     """)
-    books = [dict(row) for row in cur.fetchall()]
+    books = []
+    for row in cur.fetchall():
+        book = dict(row)
+        if book["genres"]:
+            book["genres"] = book["genres"].split(",")
+        else:
+            book["genres"] = []
+        books.append(book)
+
     conn.close()
     return {"books": books}
 
