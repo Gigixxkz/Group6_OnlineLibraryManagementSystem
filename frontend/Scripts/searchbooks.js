@@ -123,11 +123,29 @@ function renderBooks(books) {
                     <p class="mb-1"><strong>Year:</strong> ${book.year || "—"}</p>
                     <p class="mb-1"><strong>Language:</strong> ${escapeHtml(book.language || "—")}</p>
 
+                    <p class="mb-2 small text-muted"
+                        style="max-height: 60px; overflow: hidden;">
+                        ${book.description
+                        ? escapeHtml(book.description)
+                        : "<em>No description available.</em>"
+                        }
+                    </p>
+
+                    <button class="btn btn-link btn-sm p-0"
+                        data-action="show-description"
+                        data-book-id="${book.id}"
+                        style="color:#a00055; text-decoration: underline;">
+                        Show more
+                    </button>
+
+
                     <p class="mb-2"><strong>Genres:</strong> 
                         ${
                             book.genres && book.genres.length > 0
                                 ? book.genres
-                                    .map(g => `<span class="badge bg-info text-dark me-1">${escapeHtml(g)}</span>`)
+                                    .map(g => `<span class="badge me-1" style="background-color:#ce75a5; color:white;">
+                                                ${escapeHtml(g)}
+                                            </span>`)
                                     .join("")
                                 : "<span class='text-muted'>None</span>"
                         }
@@ -140,11 +158,13 @@ function renderBooks(books) {
 
                     ${
                         isAvailable
-                            ? `<button class="btn btn-outline-primary btn-sm" 
-                                       data-action="borrow" 
-                                       data-book-id="${book.id}">
-                                   Borrow
-                               </button>`
+                            ? `<button class="btn btn-sm"
+                                        data-action="borrow"
+                                        data-book-id="${book.id}"
+                                        style="background-color:#a00055; color:white; border:none;">
+                                    Borrow
+                                </button>
+                                `
                             : `<button class="btn btn-secondary btn-sm" disabled>Borrowed</button>`
                     }
                 </div>
@@ -235,6 +255,27 @@ function initEvents() {
         $("borrowBookTitle").textContent = book.title || "this book";
 
         const modal = new bootstrap.Modal(document.getElementById("confirmBorrowModal"));
+        modal.show();
+    });
+
+    // SHOW DESCRIPTION BUTTON
+    $("booksGrid").addEventListener("click", (event) => {
+        const btn = event.target.closest("[data-action='show-description']");
+        if (!btn) return;
+
+        const bookId = btn.getAttribute("data-book-id");
+        const book = allBooks.find(b => String(b.id) === String(bookId));
+        if (!book) return;
+
+        // Fill modal content
+        $("descBookTitle").textContent = book.title || "Book Description";
+        $("descBookContent").textContent =
+            book.description || "No description available.";
+
+        // Show modal
+        const modal = new bootstrap.Modal(
+            document.getElementById("descriptionModal")
+        );
         modal.show();
     });
 

@@ -170,10 +170,13 @@ Date Updated: 24 November 2025
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
                             data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="confirmBorrowBtn" class="btn btn-primary"
-                            data-bs-dismiss="modal">
+                    <button type="button" id="confirmBorrowBtn"
+                        class="btn"
+                        data-bs-dismiss="modal"
+                        style="background-color:#a00055; color:white; border:none;">
                         Yes, Borrow
                     </button>
+
                 </div>
 
             </div>
@@ -194,6 +197,28 @@ Date Updated: 24 November 2025
 
     <!-- Our JS file that does all the filtering magic -->
     <script src="/static/scripts/searchbooks.js"></script>
+
+        <!-- Book Description Modal -->
+    <div class="modal fade" id="descriptionModal" tabindex="-1"
+        aria-labelledby="descriptionModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+        <div class="modal-header bg-dark text-light">
+            <h5 class="modal-title" id="descriptionModalLabel">Book Description</h5>
+            <button type="button" class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body text-dark">
+            <h6 id="descBookTitle" class="fw-bold mb-3"></h6>
+            <p id="descBookContent"></p>
+        </div>
+
+        </div>
+    </div>
+    </div>
 
 </body>
 </html>
