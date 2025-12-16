@@ -29,10 +29,21 @@ function renderNavbar() {
               </button>
 
               <span id="finesBadge"
-                class="position-absolute top-0 start-100 translate-middle p-1 bg-danger text-white rounded-circle d-none"
-                style="font-size: 0.7rem; font-weight: bold;">
+                class="position-absolute top-0 start-100 translate-middle bg-danger text-white rounded-circle d-none"
+                style="
+                width: 16px;
+                height: 16px;
+                font-size: 0.7rem;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 3px;
+                ">
                 !
               </span>
+
+
             </li>
 
             <li class="nav-item"><a class="nav-link fs-5" href="#" id="logoutLink">Logout</a></li>
